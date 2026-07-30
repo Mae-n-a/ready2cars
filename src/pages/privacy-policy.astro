@@ -1,0 +1,196 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { site } from '../data/site';
+---
+
+<LegalLayout
+  title="Privacy Policy — Ready2Cars"
+  description="Come Ready2Cars raccoglie e tratta i dati personali di chi usa il sito e richiede un preventivo."
+>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Ultimo aggiornamento: 30 luglio 2026</p>
+
+  <div class="todo">
+    <b>Da completare prima della pubblicazione</b>
+    <p>
+      I campi tra parentesi quadre vanno compilati: indirizzo della sede, fornitore di hosting e, se
+      attivi statistiche o pubblicità, i relativi servizi. Fai controllare il testo da un consulente
+      privacy prima di metterlo online: questo è un documento di partenza, non un parere legale.
+    </p>
+  </div>
+
+  <p>
+    Questa pagina spiega quali dati personali raccogliamo quando visiti <strong>ready2cars.com</strong
+    > o ci chiedi un preventivo, perché li raccogliamo e cosa puoi chiederci in qualsiasi momento. Il
+    documento è redatto ai sensi del Regolamento (UE) 2016/679 (GDPR) e del D.lgs. 196/2003 come
+    modificato dal D.lgs. 101/2018.
+  </p>
+
+  <h2>1. Chi tratta i tuoi dati</h2>
+  <div class="box">
+    <p>
+      <strong>Titolare del trattamento:</strong> {site.legalName}<br />
+      <strong>Sede:</strong> [INDIRIZZO COMPLETO DELLA SEDE]<br />
+      <strong>P.IVA:</strong> {site.vat} &nbsp;·&nbsp; <strong>REA:</strong> {site.rea}<br />
+      <strong>Email:</strong> <a href={`mailto:${site.email}`}>{site.email}</a><br />
+      <strong>PEC:</strong> {site.pec}<br />
+      <strong>Telefono:</strong> {site.phones.mobile.label} · {site.phones.office.label}
+    </p>
+  </div>
+  <p>
+    Non abbiamo nominato un Responsabile della protezione dei dati (DPO), non essendovi obbligo di
+    legge nel nostro caso. Per qualsiasi questione sui dati personali puoi scrivere agli indirizzi
+    qui sopra.
+  </p>
+
+  <h2>2. Quali dati raccogliamo</h2>
+  <h3>2.1 Dati che ci fornisci tu</h3>
+  <p>Quando compili il modulo di richiesta sul sito ti chiediamo:</p>
+  <ul>
+    <li><strong>sempre:</strong> nome e cognome, indirizzo email;</li>
+    <li><strong>se lo indichi:</strong> numero di telefono e le note che scrivi;</li>
+    <li><strong>se vuoi importare un'auto:</strong> marca, modello, anno e fascia di budget;</li>
+    <li>
+      <strong>se vuoi vendere la tua auto:</strong> auto, anno di immatricolazione, chilometri e condizioni;
+    </li>
+    <li><strong>se sei un rivenditore:</strong> ragione sociale, partita IVA e volumi annui indicativi.</li>
+  </ul>
+  <p>
+    Se ci contatti per email, telefono o WhatsApp trattiamo i dati contenuti nel messaggio o
+    necessari alla telefonata.
+  </p>
+
+  <h3>2.2 Dati raccolti automaticamente</h3>
+  <p>
+    Il sito <strong>non usa cookie propri</strong> e non ti profila. Carica però alcune risorse da
+    server esterni: per farlo il tuo browser comunica a quei server il tuo indirizzo IP e le
+    informazioni tecniche di base (browser, sistema operativo, pagina di provenienza). I dettagli
+    sono nella <a href="/cookie-policy">Cookie Policy</a>.
+  </p>
+  <p>
+    Il nostro fornitore di hosting registra inoltre i normali log di accesso al server (indirizzo IP,
+    data e ora, pagina richiesta), necessari al funzionamento e alla sicurezza del sito.
+  </p>
+
+  <h2>3. Perché li trattiamo e su quale base giuridica</h2>
+  {/* focusable + named: the table scrolls sideways on narrow screens, so it has to be
+      reachable and announced for keyboard and screen-reader users (axe scrollable-region-focusable) */}
+  <div class="scroller" tabindex="0" role="region" aria-label="Finalità, basi giuridiche e tempi di conservazione">
+    <table>
+      <thead>
+        <tr><th>Finalità</th><th>Base giuridica</th><th>Conservazione</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Rispondere alla tua richiesta e prepararti un preventivo</td>
+          <td>Art. 6.1.b GDPR — misure precontrattuali richieste da te</td>
+          <td>24 mesi dall'ultimo contatto, se non si arriva a un contratto</td>
+        </tr>
+        <tr>
+          <td>Gestire il contratto se decidi di procedere</td>
+          <td>Art. 6.1.b GDPR — esecuzione del contratto</td>
+          <td>10 anni, per obblighi civilistici e fiscali</td>
+        </tr>
+        <tr>
+          <td>Adempimenti fiscali, doganali e di immatricolazione</td>
+          <td>Art. 6.1.c GDPR — obbligo di legge</td>
+          <td>10 anni</td>
+        </tr>
+        <tr>
+          <td>Sicurezza del sito e log del server</td>
+          <td>Art. 6.1.f GDPR — legittimo interesse</td>
+          <td>Secondo i tempi del fornitore di hosting</td>
+        </tr>
+        <tr>
+          <td>Difesa dei nostri diritti in sede giudiziaria</td>
+          <td>Art. 6.1.f GDPR — legittimo interesse</td>
+          <td>Per la durata della prescrizione applicabile</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Non ti mandiamo newsletter e non facciamo marketing automatizzato. Se in futuro lo faremo, te lo
+    chiederemo prima con un consenso specifico e revocabile.
+  </p>
+
+  <h2>4. Il modulo del sito funziona via email</h2>
+  <p>
+    Va detto chiaramente: quando premi <em>Invia richiesta</em>, il sito non spedisce nulla da solo.
+    Prepara un'email già compilata e apre il programma di posta del tuo dispositivo, così sei tu a
+    inviarla. Questo significa che i tuoi dati arrivano solo se completi l'invio e che transitano
+    attraverso il tuo provider di posta e il nostro, secondo le rispettive privacy policy.
+  </p>
+
+  <h2>5. A chi comunichiamo i dati</h2>
+  <p>Comunichiamo i tuoi dati solo a chi serve per portare a termine il servizio:</p>
+  <ul>
+    <li>
+      il <strong>fornitore di hosting</strong> del sito e della posta elettronica [NOME FORNITORE], come
+      responsabile del trattamento;
+    </li>
+    <li>
+      <strong>venditori, concessionari e intermediari</strong> in Italia o all'estero, per cercare e acquistare
+      il veicolo che ci hai chiesto;
+    </li>
+    <li><strong>trasportatori e spedizionieri</strong>, per la consegna;</li>
+    <li>
+      <strong>agenzie di pratiche auto, Motorizzazione e Agenzia delle Dogane</strong>, per
+      immatricolazione e sdoganamento;
+    </li>
+    <li><strong>consulenti fiscali e legali</strong>, banche e istituti di pagamento;</li>
+    <li>le <strong>autorità</strong>, quando previsto dalla legge.</li>
+  </ul>
+  <p>Non vendiamo i tuoi dati a nessuno e non li cediamo per finalità pubblicitarie.</p>
+
+  <h2>6. Trasferimenti fuori dall'Unione Europea</h2>
+  <p>
+    Alcuni dei servizi esterni caricati dal sito (in particolare Google Fonts e la CDN di Pexels per
+    le immagini) sono forniti da società statunitensi: la semplice visita può comportare un
+    trasferimento del tuo indirizzo IP negli Stati Uniti. Questi trasferimenti avvengono sulla base
+    delle clausole contrattuali standard della Commissione europea e, per i fornitori aderenti, del <em
+      >EU-U.S. Data Privacy Framework</em
+    >.
+  </p>
+  <p>
+    Se importiamo l'auto da un Paese extra UE, i dati necessari all'operazione (nome, documenti per
+    la fatturazione e lo sdoganamento) vengono comunicati al venditore e alle autorità di quel Paese,
+    in base all'art. 49.1.b GDPR — esecuzione del contratto che hai richiesto.
+  </p>
+
+  <h2>7. I tuoi diritti</h2>
+  <p>In qualsiasi momento puoi chiederci di:</p>
+  <ul>
+    <li><strong>accedere</strong> ai dati che abbiamo su di te (art. 15);</li>
+    <li><strong>correggerli</strong> se sono sbagliati o incompleti (art. 16);</li>
+    <li><strong>cancellarli</strong>, quando non abbiamo motivo di conservarli (art. 17);</li>
+    <li><strong>limitarne</strong> il trattamento (art. 18);</li>
+    <li><strong>riceverli in formato leggibile</strong> o farli trasferire ad altri (art. 20);</li>
+    <li><strong>opporti</strong> al trattamento basato sul legittimo interesse (art. 21).</li>
+  </ul>
+  <p>
+    Scrivi a <a href={`mailto:${site.email}`}>{site.email}</a>: ti rispondiamo entro un mese. Se
+    ritieni che stiamo trattando i tuoi dati in modo scorretto puoi rivolgerti al <strong
+      >Garante per la protezione dei dati personali</strong
+    >
+    (<a href="https://www.garanteprivacy.it" rel="noopener" target="_blank">garanteprivacy.it</a>)
+    oppure al giudice.
+  </p>
+
+  <h2>8. Se non ci dai i dati</h2>
+  <p>
+    Nome ed email sono indispensabili per poterti rispondere: senza quelli non possiamo darti un
+    preventivo. Tutto il resto è facoltativo e serve solo a farci capire meglio cosa cerchi.
+  </p>
+
+  <h2>9. Minori</h2>
+  <p>Il sito non è rivolto a minori di 18 anni e non raccogliamo intenzionalmente i loro dati.</p>
+
+  <h2>10. Modifiche</h2>
+  <p>
+    Se cambiamo questa policy aggiorniamo la data in cima alla pagina. Ti invitiamo a ricontrollarla
+    di tanto in tanto.
+  </p>
+
+  <span slot="footer-links"><a href="/">Home</a> · <a href="/cookie-policy">Cookie Policy</a></span>
+</LegalLayout>

@@ -1,0 +1,110 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path-relative OG image inside /public. Defaults to the shared share card. */
+  ogImage?: string;
+  /** Set false on legal pages that shouldn't advertise the app etc. */
+  preloadHero?: boolean;
+}
+
+const { title, description, ogImage = '/images/og-image.jpg', preloadHero = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogUrl = new URL(ogImage, Astro.site).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  legalName: site.legalName,
+  url: site.url + '/',
+  logo: `${site.url}/images/ready2cars-logo.png`,
+  image: `${site.url}/images/og-image.jpg`,
+  description:
+    "Importazione, acquisto e commercio di automobili. Ricerca del veicolo all'estero, pratiche doganali e fiscali, immatricolazione italiana e consegna a domicilio in tutta Italia.",
+  email: site.email,
+  telephone: site.phones.mobile.schema,
+  vatID: site.vatSchema,
+  foundingDate: site.founded,
+  areaServed: { '@type': 'Country', name: 'IT' },
+  sameAs: site.socials.map((s) => s.href),
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      telephone: site.phones.mobile.schema,
+      email: site.email,
+      availableLanguage: ['it'],
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      telephone: site.phones.office.schema,
+      availableLanguage: ['it'],
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0F172A" />
+    <meta name="author" content={site.legalName} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- fonts are self-hosted: no third-party request, no render-blocking stylesheet -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/jost-var.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/bodoni-moda-var.woff2" crossorigin />
+    {
+      preloadHero && (
+        <link
+          rel="preload"
+          as="image"
+          type="image/avif"
+          fetchpriority="high"
+          href="/images/hero-800.avif"
+          imagesrcset="/images/hero-800.avif 800w, /images/hero-1400.avif 1400w, /images/hero-1920.avif 1920w"
+          imagesizes="100vw"
+        />
+      )
+    }
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:secure_url" content={ogUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ready2Cars, Rent & Import Dreams" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <link rel="icon" href="/images/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/images/ready2cars-logo.png" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organization)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Salta al contenuto</a>
+    <slot />
+  </body>
+</html>

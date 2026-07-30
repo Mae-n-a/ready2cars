@@ -1,0 +1,162 @@
+---
+/**
+ * Slim document shell for the legal pages: dark bar, 820px prose column, small footer.
+ * Ported from legacy/legal.css.
+ */
+import BaseLayout from './BaseLayout.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+const wrap = 'w-[min(820px,92%)] mx-auto';
+---
+
+<BaseLayout title={title} description={description}>
+  {/* a <header> landmark, not a bare div: axe flagged this block as content outside any
+      landmark region on both legal pages */}
+  <header class="bg-ink py-4">
+    <div class={`${wrap} flex items-center justify-between gap-5`}>
+      <a
+        class="transition-opacity duration-200 ease-brand hover:opacity-80 focus-visible:opacity-80 active:opacity-70"
+        href="/"
+        aria-label="Ready2Cars, torna alla home"
+      >
+        <img
+          class="block h-[34px] w-auto"
+          src="/images/ready2cars-logo.png"
+          alt="Ready2Cars"
+          width="502"
+          height="127"
+        />
+      </a>
+      <a
+        class="text-[.92rem] text-white/80 no-underline transition-colors duration-200 ease-brand hover:text-white focus-visible:text-white active:text-white/70"
+        href="/">&#8592; Torna al sito</a
+      >
+    </div>
+  </header>
+
+  <main id="main" class="doc pt-[clamp(40px,6vw,72px)] pb-20 text-base leading-[1.7]">
+    <div class={wrap}><slot /></div>
+  </main>
+
+  <footer class="bg-ink py-8 text-[.88rem] text-white/60">
+    <div class={`${wrap} flex flex-wrap justify-between gap-4`}>
+      <span>© 2026 {site.legalName} · P.IVA {site.vat}</span>
+      <slot name="footer-links" />
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  /* Allowed reason: styling slotted content — the policy body and the footer links arrive
+     through <slot> and cannot carry utility classes from here. Values resolve to @theme
+     tokens wherever one exists. */
+  .doc :global(h1) {
+    font-size: var(--text-doc-title);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .doc :global(h2) {
+    font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+    margin: 38px 0 12px;
+  }
+  .doc :global(h3) {
+    font-size: 1.02rem;
+    margin: 22px 0 6px;
+  }
+  .doc :global(.updated) {
+    color: var(--color-subtle);
+    font-size: 0.9rem;
+    margin-bottom: 36px;
+  }
+  .doc :global(p),
+  .doc :global(li) {
+    color: #28313d;
+  }
+  .doc :global(p) {
+    margin-bottom: 14px;
+  }
+  /* preflight strips list markers and indentation, so both are restored explicitly */
+  .doc :global(ul) {
+    list-style: disc;
+    margin: 0 0 16px 22px;
+  }
+  .doc :global(ol) {
+    list-style: decimal;
+    margin: 0 0 16px 22px;
+  }
+  .doc :global(li) {
+    margin-bottom: 7px;
+  }
+  .doc :global(strong) {
+    font-weight: 600;
+  }
+  .doc :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .doc :global(a:hover),
+  .doc :global(a:active) {
+    color: var(--color-accent-hover);
+  }
+  .doc :global(.box) {
+    background: white;
+    border: 1px solid var(--color-hair);
+    border-radius: var(--radius-brand);
+    padding: 22px 24px;
+    margin: 26px 0;
+    box-shadow: var(--shadow-card);
+  }
+  .doc :global(.box p:last-child) {
+    margin-bottom: 0;
+  }
+  .doc :global(.todo) {
+    border-left: 3px solid var(--color-accent);
+    background: var(--color-accent-soft);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px;
+    margin: 26px 0;
+  }
+  .doc :global(.todo b) {
+    display: block;
+    margin-bottom: 6px;
+  }
+  .doc :global(.scroller) {
+    overflow-x: auto;
+  }
+  .doc :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.95rem;
+  }
+  .doc :global(th),
+  .doc :global(td) {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-hair);
+    vertical-align: top;
+  }
+  .doc :global(th) {
+    font-weight: 600;
+    background: white;
+  }
+
+  footer :global(a) {
+    color: rgb(255 255 255 / 0.8);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  footer :global(a:hover),
+  footer :global(a:active) {
+    color: white;
+  }
+</style>

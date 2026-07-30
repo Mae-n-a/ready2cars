@@ -1,0 +1,118 @@
+---
+// The three services are the entry points into the flow above, so they live in the
+// same section as the flow timeline.
+const cards = [
+  {
+    slug: 'import',
+    intent: 'importa',
+    title: 'Ready2Import',
+    body: "L'auto che hai in mente la cerchiamo dove si trova, in qualunque Paese. Al resto, documenti compresi, pensiamo noi.",
+    cta: 'Inizia la ricerca',
+    alt: 'Supercar esposta in showroom di lusso',
+  },
+  {
+    slug: 'sell',
+    intent: 'vendi',
+    title: 'Ready2Sell',
+    body: 'Vendi la tua auto senza annunci e senza curiosi che ti fanno perdere tempo. La valutiamo in fretta e il pagamento è sicuro.',
+    cta: 'Richiedi valutazione',
+    alt: 'Stretta di mano e consegna delle chiavi in concessionaria',
+  },
+  {
+    slug: 'trade',
+    intent: 'commercia',
+    title: 'Ready2Trade',
+    body: "Sei un commerciante? Lavoriamo volentieri con te. Ti apriamo la nostra rete di contatti all'estero, con condizioni da professionista.",
+    cta: 'Diventa partner',
+    alt: 'Auto di alta gamma in showroom moderno',
+  },
+];
+
+const sizes = '(max-width:1000px) 92vw, 30vw';
+---
+
+<div
+  class="mt-[72px] grid grid-cols-3 gap-8 max-wide:mx-auto max-wide:max-w-[540px] max-wide:grid-cols-1"
+  data-stagger
+>
+  {cards.map((card) => (
+    <article
+      class="service-card group flex flex-col overflow-hidden rounded-brand border border-hair bg-white shadow-card [transform-style:preserve-3d] transition-[box-shadow,border-color] duration-[350ms] ease-brand hover:border-accent/30 hover:shadow-lift focus-within:border-accent/30 focus-within:shadow-lift"
+    >
+      <div class="aspect-[16/10] overflow-hidden bg-mist">
+        <picture>
+          <source
+            type="image/avif"
+            sizes={sizes}
+            srcset={`/images/card-${card.slug}-400.avif 400w, /images/card-${card.slug}-600.avif 600w, /images/card-${card.slug}-900.avif 900w`}
+          />
+          <source
+            type="image/webp"
+            sizes={sizes}
+            srcset={`/images/card-${card.slug}-400.webp 400w, /images/card-${card.slug}-600.webp 600w, /images/card-${card.slug}-900.webp 900w`}
+          />
+          {/* width+height on every img keeps CLS at 0 */}
+          <img
+            src={`/images/card-${card.slug}-600.webp`}
+            alt={card.alt}
+            loading="lazy"
+            decoding="async"
+            width="900"
+            height="563"
+            class="h-full w-full object-cover transition-transform duration-[600ms] ease-brand group-hover:scale-[1.07]"
+          />
+        </picture>
+      </div>
+      <div class="flex flex-1 flex-col gap-3 p-7">
+        <h3 class="text-[1.38rem]">{card.title}</h3>
+        <p class="flex-1 text-subtle">{card.body}</p>
+        <button
+          class="inline-flex min-h-11 cursor-pointer items-center gap-2 self-start border-0 bg-transparent p-0 font-body text-base font-semibold text-accent active:text-accent-hover hover:[&_svg]:translate-x-[5px] focus-visible:[&_svg]:translate-x-[5px]"
+          type="button"
+          data-sheet={card.intent}
+        >
+          {card.cta}
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+            class="transition-transform duration-300 ease-brand"
+          >
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </article>
+  ))}
+</div>
+
+<script>
+  import gsap from 'gsap';
+  import { onMouse } from '../scripts/has-mouse';
+
+  // Bind only once a real mouse is seen. `pointer: fine` reports false on touchscreen
+  // laptops and remote desktops, which disabled the tilt for people who did have a mouse.
+  onMouse(() => {
+    document.querySelectorAll<HTMLElement>('.service-card').forEach((card) => {
+      card.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        const r = card.getBoundingClientRect();
+        gsap.to(card, {
+          rotateY: ((e.clientX - r.left) / r.width - 0.5) * 7,
+          rotateX: ((e.clientY - r.top) / r.height - 0.5) * -7,
+          y: -8,
+          duration: 0.5,
+          ease: 'power2.out',
+          transformPerspective: 900,
+        });
+      });
+      card.addEventListener('pointerleave', () =>
+        gsap.to(card, { rotateX: 0, rotateY: 0, y: 0, duration: 0.7, ease: 'power3.out' })
+      );
+    });
+  });
+</script>

@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* Tailwind v4 ships `hover:` as `@media (hover: hover) { &:hover }`. Any Windows laptop
+   with a touchscreen — and remote-desktop sessions — report `hover: none` / `pointer:
+   coarse` even with a mouse attached, which silently kills every hover style on the site.
+   Redefining the variant as a plain `&:hover` means hover works whenever the browser
+   actually reports a hover, which is the behaviour we want. Elements that must not show a
+   sticky state after a tap are handled with `active:` instead. */
+@custom-variant hover (&:hover);
+
+/* Tailwind v4 emits only the utilities actually referenced in src/**, so the shipped CSS
+   is already limited to what the project uses — no purge config needed. */
+
+/* One variable font file per family covers every weight in the design. */
+@font-face {
+  font-family: 'Bodoni Moda';
+  src: url('/fonts/bodoni-moda-var.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Jost';
+  src: url('/fonts/jost-var.woff2') format('woff2-variations');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* brand palette — ink/slate ground with a single red accent */
+  --color-ink: #0F172A;
+  --color-slate-brand: #1E293B;
+  --color-accent: #DC2626;
+  --color-accent-hover: #B91C1C;
+  --color-accent-soft: rgba(220, 38, 38, 0.12);
+  --color-page: #F8FAFC;
+  --color-subtle: #5A6779;
+  --color-hair: #E2E8F0;
+  --color-mist: #E9EDF1;
+
+  --font-display: 'Bodoni Moda', Georgia, serif;
+  --font-body: 'Jost', system-ui, sans-serif;
+
+  /* Named breakpoints for the values this design actually uses, so components stop
+     repeating max-[760px] etc. Tailwind's defaults (sm/md/lg/xl) are left intact. */
+  --breakpoint-phone: 560px;
+  --breakpoint-tablet: 761px;
+  --breakpoint-nav: 900px;
+  --breakpoint-wide: 1000px;
+  --breakpoint-ultra: 1400px;
+
+  /* Fluid type scale — one definition per role instead of inline clamp() everywhere */
+  --text-display: clamp(2.5rem, 6.2vw, 4.6rem);
+  --text-section: clamp(2rem, 4.2vw, 3rem);
+  --text-subsection: clamp(1.35rem, 2.4vw, 1.7rem);
+  --text-doc-title: clamp(1.9rem, 4.5vw, 2.7rem);
+
+  --radius-brand: 14px;
+  --radius-brand-lg: 20px;
+
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lift: 0 8px 30px rgba(15, 23, 42, 0.10);
+  --shadow-deep: 0 30px 70px rgba(15, 23, 42, 0.28);
+
+  /* accent glows — every red shadow in the project comes from one of these three */
+  --shadow-accent: 0 10px 26px -6px rgba(220, 38, 38, 0.55);
+  --shadow-accent-strong: 0 16px 34px -8px rgba(220, 38, 38, 0.65);
+  --shadow-node: 0 10px 24px -8px rgba(220, 38, 38, 0.7);
+  --shadow-node-hover: 0 14px 30px -8px rgba(220, 38, 38, 0.85);
+
+  /* translucent surfaces used on the dark bands */
+  /* the lighter red used for icon strokes on dark bands (was #F87171 repeated 4x) */
+  --color-accent-light: #F87171;
+  --color-accent-chip: rgba(220, 38, 38, 0.16);
+  --color-accent-chip-hover: rgba(220, 38, 38, 0.28);
+  --color-accent-edge: rgba(220, 38, 38, 0.35);
+  --color-accent-edge-hover: rgba(220, 38, 38, 0.7);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background: var(--color-page);
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+  /* the fixed header must not cover anchor targets */
+  :where(section[id], main[id]) { scroll-margin-top: 96px; }
+  ::selection { background: var(--color-accent); color: #fff; }
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* shared button, used by the hero, nav and request sheet */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-semibold
+           cursor-pointer border-0 px-8 py-[15px] min-h-12 text-base;
+    transition: background .25s var(--ease-brand), transform .25s var(--ease-brand),
+                box-shadow .25s var(--ease-brand), border-color .25s;
+    will-change: transform;
+  }
+  /* Press feedback. Unlike hover this also works on touch, where hover never fires,
+     so it is the one affordance every device gets. Fast in, so it feels mechanical. */
+  .btn:active { transform: scale(.97); transition-duration: .08s; }
+  .btn:disabled { opacity: .6; pointer-events: none; }
+  .btn-primary {
+    @apply bg-accent text-white;
+    box-shadow: 0 10px 26px -6px rgba(220, 38, 38, 0.55);
+  }
+  .btn-primary:hover {
+    @apply bg-accent-hover;
+    box-shadow: 0 16px 34px -8px rgba(220, 38, 38, 0.65);
+  }
+  .btn-ghost {
+    @apply text-white border-[1.5px];
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(6px);
+  }
+  .btn-ghost:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .shell { width: min(1200px, 92%); margin-inline: auto; }
+
+  /* the standard vertical rhythm for a page section — use this, not inline clamp padding */
+  .section { padding-block: clamp(72px, 9vw, 120px); }
+
+  .section-title { @apply text-section mb-[18px]; }
+  .section-lede { @apply text-subtle max-w-[58ch] text-[1.08rem]; }
+
+  /* skip link — WCAG 2.4.1 */
+  .skip {
+    @apply absolute left-4 z-[70] px-5 py-3 font-semibold text-white bg-accent no-underline;
+    top: -60px;
+    border-radius: 0 0 10px 10px;
+    transition: top .2s var(--ease-brand);
+  }
+  .skip:focus { top: 0; }
+}

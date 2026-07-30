@@ -1,0 +1,78 @@
+﻿---
+// "Nel prezzo c'Ã¨ tutto" â€” the dark band listing what the service already covers.
+// gs-up / data-stagger are the page-wide GSAP reveal hooks (gsap.from, so a deep link
+// that lands past this section still renders it complete).
+const items = [
+  {
+    title: 'Ricerca internazionale',
+    text: "Cerchiamo l'auto all'estero e la controlliamo prima di proporla.",
+    icon: 'search',
+  },
+  {
+    title: 'Dogana e IVA',
+    text: 'Le pratiche doganali e quelle fiscali le facciamo noi.',
+    icon: 'shield',
+  },
+  {
+    title: 'Immatricolazione',
+    text: 'Ti prepariamo targa italiana e documenti, con tempi certi.',
+    icon: 'plate',
+  },
+  {
+    title: 'Trasporto a domicilio',
+    text: "L'auto arriva davanti a casa tua, in tutta Italia.",
+    icon: 'truck',
+  },
+];
+---
+
+<!-- the ::after layer is the red radial glow bleeding out of the band's right half -->
+<section
+  id="incluso"
+  aria-labelledby="incluso-t"
+  class="relative overflow-hidden bg-ink text-white py-14
+         after:content-[''] after:absolute after:inset-[auto_-10%_-60%_40%] after:h-[200px]
+         after:bg-[radial-gradient(closest-side,var(--color-accent-edge),transparent)] after:blur-[20px]"
+>
+  <div class="shell">
+    <div class="relative text-center mb-9 gs-up">
+      <b id="incluso-t" class="font-display text-subsection font-semibold"
+        >Nel prezzo c'Ã¨ tutto</b
+      >
+      <span class="block text-[.96rem] mt-1.5 text-white/58"
+        >Dalla ricerca alla consegna non ti arriva nessun costo a sorpresa.</span
+      >
+    </div>
+
+    <div class="relative grid grid-cols-1 md:grid-cols-4 gap-[22px] md:gap-7" data-stagger>
+      {items.map((it) => (
+        <div class="group/inc flex gap-3.5 items-start text-left">
+          <span
+            class="flex-none w-10 h-10 rounded-[10px] grid place-items-center
+                   bg-accent-chip border border-accent-edge text-accent-light
+                   transition duration-300 ease-brand
+                   motion-safe:group-hover/inc:-translate-y-0.5
+                   group-hover/inc:bg-accent-chip-hover group-hover/inc:border-accent-edge-hover"
+          >
+            {it.icon === 'search' && (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.3-4.3"/></svg>
+            )}
+            {it.icon === 'shield' && (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4v5c0 4.2-3 7.6-8 9-5-1.4-8-4.8-8-9V7z"/><path d="m9 12 2 2 4-4"/></svg>
+            )}
+            {it.icon === 'plate' && (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M8 10h8M8 14h5"/></svg>
+            )}
+            {it.icon === 'truck' && (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 15V8h11v7M14 10h4l3 3v2h-7"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+            )}
+          </span>
+          <div>
+            <b class="block font-body font-semibold text-base mb-[3px]">{it.title}</b>
+            <span class="block text-[.9rem] leading-[1.45] text-white/60">{it.text}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

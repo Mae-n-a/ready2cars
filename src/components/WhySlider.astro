@@ -1,0 +1,136 @@
+---
+// "Perché Ready2Cars" — photo slideshow (left) + heading and checklist (right).
+// Slides are declared here so the markup below stays a single loop; the alt texts are
+// copied verbatim from legacy/index.html.
+const slides = [
+  { n: 1, alt: 'Dettaglio dei fari accesi di una Mercedes nera' },
+  { n: 2, alt: 'Mano che tiene la chiave di una Mercedes appena consegnata' },
+  { n: 3, alt: 'Audi nera in autostrada al tramonto' },
+  { n: 4, alt: 'Auto Maserati esposte in uno showroom moderno' },
+];
+
+const checks = [
+  { b: 'La burocrazia la facciamo noi', s: 'Non devi mettere piede in un ufficio, ci andiamo noi per te.' },
+  { b: 'Niente truffe, niente sanzioni', s: 'Controlliamo ogni auto e ogni pagamento. Lo facciamo dal 2012.' },
+  { b: 'Sai già quando la guidi', s: 'Ti diciamo subito quanto ci vuole per la targa e per la consegna.' },
+  { b: 'Consegna a casa tua', s: "L'auto te la portiamo dove abiti, senza che tu debba muoverti." },
+];
+
+const sizes = '(max-width:1000px) 92vw, 46vw';
+---
+
+<section class="section" id="perche">
+  <div class="shell grid grid-cols-1 wide:grid-cols-2 gap-[clamp(40px,5vw,72px)] items-center">
+    <div
+      class="gs-scale group relative aspect-[4/3] rounded-brand-lg overflow-hidden shadow-deep bg-ink"
+      id="whySlider"
+      role="group"
+      aria-roledescription="carosello"
+      aria-label="Il percorso della tua auto"
+    >
+      {slides.map((s, i) => (
+        /* display:contents so the <picture> wrappers don't introduce inline boxes of their own */
+        <picture class="contents">
+          <source type="image/avif" sizes={sizes} srcset={`/images/slide-${s.n}-500.avif 500w, /images/slide-${s.n}-800.avif 800w, /images/slide-${s.n}-1200.avif 1200w`} />
+          <source type="image/webp" sizes={sizes} srcset={`/images/slide-${s.n}-500.webp 500w, /images/slide-${s.n}-800.webp 800w, /images/slide-${s.n}-1200.webp 1200w`} />
+          {/* slides are absolutely filled, so nothing can expose the container — and there is
+              deliberately no parallax on them */}
+          <img
+            class:list={[
+              'wslide absolute inset-0 w-full h-full object-cover opacity-0 [&.on]:opacity-100',
+              'motion-safe:transition-opacity duration-[900ms] ease-brand',
+              i === 0 && 'on',
+            ]}
+            src={`/images/slide-${s.n}-800.webp`}
+            alt={s.alt}
+            width="1200"
+            height="900"
+            fetchpriority={i === 0 ? 'high' : undefined}
+            loading={i === 0 ? undefined : 'lazy'}
+            decoding={i === 0 ? undefined : 'async'}
+          />
+        </picture>
+      ))}
+      {/* --w-dur must match the autoplay setInterval in the slideshow JS below (5000ms) */}
+      <div class="w-ui [--w-dur:5s] absolute inset-x-0 bottom-0 top-auto flex items-center justify-center gap-2 p-4 bg-gradient-to-b from-transparent to-ink/80">
+        <div class="flex gap-1">
+          {slides.map((_, i) => (
+            <button
+              type="button"
+              class="w-dot w-[26px] h-[26px] p-0 border-0 bg-transparent cursor-pointer grid place-items-center
+                     before:content-[''] before:w-[9px] before:h-[9px] before:rounded-full
+                     before:bg-white/50 motion-safe:before:transition-[background,width] before:duration-[250ms]
+                     not-aria-[current=true]:hover:before:bg-white/85
+                     not-aria-[current=true]:focus-visible:before:bg-white/85
+                     not-aria-[current=true]:active:before:bg-white
+                     aria-[current=true]:before:bg-accent
+                     motion-safe:aria-[current=true]:before:animate-[wProgress_var(--w-dur)_linear_forwards]
+                     motion-reduce:aria-[current=true]:before:w-6
+                     group-hover:before:[animation-play-state:paused]
+                     group-focus-within:before:[animation-play-state:paused]"
+              aria-label={`Vai alla foto ${i + 1} di ${slides.length}`}
+            ></button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="section-title gs-up">Il difficile lo facciamo noi</h2>
+      <p class="section-lede gs-up">Importare un'auto da soli vuol dire pratiche, uffici e la paura di rimetterci dei soldi. Preferiamo occuparcene noi, che lo facciamo da anni.</p>
+      <ul class="list-none mt-8 grid gap-5" data-stagger>
+        {checks.map((c) => (
+          <li class="flex gap-4 items-start">
+            <span class="flex-none w-[30px] h-[30px] rounded-full bg-accent-soft grid place-items-center">
+              <svg class="text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <div>
+              <b class="block text-[1.06rem] mb-0.5">{c.b}</b>
+              <span class="text-subtle text-[.98rem]">{c.s}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* "perché noi" slideshow (plain CSS crossfade, no GSAP needed) */
+  const slider = document.getElementById('whySlider');
+  const wSlides = slider ? [...slider.querySelectorAll<HTMLImageElement>('.wslide')] : [];
+
+  if (slider && wSlides.length) {
+    const dots = [...slider.querySelectorAll<HTMLButtonElement>('.w-dot')];
+    let wi = 0;
+    let wTimer: number | undefined;
+
+    function show(i: number) {
+      wi = (i + wSlides.length) % wSlides.length;
+      wSlides.forEach((s, n) => s.classList.toggle('on', n === wi));
+      dots.forEach((d, n) => d.setAttribute('aria-current', String(n === wi)));
+    }
+
+    const slow = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function restart() {
+      clearInterval(wTimer);
+      if (!slow) wTimer = window.setInterval(() => show(wi + 1), 5000);
+    }
+
+    dots.forEach((d, i) => d.addEventListener('click', () => { show(i); restart(); }));
+
+    slider.addEventListener('pointerenter', () => clearInterval(wTimer));
+    slider.addEventListener('pointerleave', restart);
+    slider.addEventListener('focusin', () => clearInterval(wTimer));
+    slider.addEventListener('focusout', restart);
+
+    show(0);
+    restart();
+  }
+</script>
+
+<style>
+  /* @keyframes — the only thing Tailwind cannot express: the active dot's pill grows
+     9px -> 24px over --w-dur as an autoplay progress bar. */
+  @keyframes wProgress { from { width: 9px } to { width: 24px } }
+</style>

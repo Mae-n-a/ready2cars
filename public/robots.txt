@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ready2cars.com/sitemap-index.xml

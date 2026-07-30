@@ -1,0 +1,69 @@
+﻿---
+// Hero â€” LCP section. Background is a CSS image-set() layer (see <style>), copy is animated
+// with CSS keyframes only. Deliberately no GSAP here: gating the hero copy on a script cost
+// 3.0s of LCP render delay.
+---
+
+<section class="relative flex min-h-[100svh] items-center overflow-hidden text-white">
+  <div class="hero-bg absolute inset-x-0 -inset-y-[12%] bg-cover bg-center bg-no-repeat will-change-transform" id="heroBg" aria-hidden="true"></div>
+  <div class="absolute inset-0 bg-[linear-gradient(100deg,--alpha(var(--color-ink)/96%)_0%,--alpha(var(--color-ink)/80%)_42%,--alpha(var(--color-ink)/28%)_100%),radial-gradient(120%_80%_at_20%_50%,transparent_40%,--alpha(var(--color-ink)/60%)_100%)]" aria-hidden="true"></div>
+
+  <div class="shell relative z-[2] pt-40 pb-[110px] max-tablet:pt-[130px] max-tablet:pb-[90px]">
+    <!-- Words are pre-wrapped in the markup (span.w > i with a --d delay) so the reveal can
+         start on the first frame instead of waiting for JS. -->
+    <h1 class="text-display mb-[22px] max-w-[15ch] [text-shadow:0_2px_30px_rgba(0,0,0,.3)]">
+      <span class="w inline-block overflow-hidden pb-[.12em] mb-[-.12em]" style="--d:0s"><i class="inline-block not-italic motion-safe:animate-[wordUp_.85s_var(--ease-brand)_var(--d,0s)_both]">Importa</i></span>
+      <span class="w inline-block overflow-hidden pb-[.12em] mb-[-.12em]" style="--d:.07s"><i class="inline-block not-italic motion-safe:animate-[wordUp_.85s_var(--ease-brand)_var(--d,0s)_both]">l'auto</i></span>
+      <span class="w inline-block overflow-hidden pb-[.12em] mb-[-.12em]" style="--d:.14s"><i class="inline-block not-italic motion-safe:animate-[wordUp_.85s_var(--ease-brand)_var(--d,0s)_both]">dei</i></span>
+      <em class="text-accent not-italic"><span class="w inline-block overflow-hidden pb-[.12em] mb-[-.12em]" style="--d:.21s"><i class="inline-block not-italic motion-safe:animate-[wordUp_.85s_var(--ease-brand)_var(--d,0s)_both]">tuoi</i></span>
+      <span class="w inline-block overflow-hidden pb-[.12em] mb-[-.12em]" style="--d:.28s"><i class="inline-block not-italic motion-safe:animate-[wordUp_.85s_var(--ease-brand)_var(--d,0s)_both]">sogni</i></span></em>
+    </h1>
+
+    <p class="mb-[38px] max-w-[54ch] text-[1.16rem] font-light text-white/90 motion-safe:animate-[leadUp_.8s_var(--ease-brand)_.15s_both]">Niente contatti da rincorrere all'estero, viaggi per andare a vedere l'auto o pratiche che non finiscono mai. E nessun rischio di truffe. Tu scegli l'auto, al resto pensiamo noi e te la portiamo a casa.</p>
+
+    <div class="mb-16 flex flex-wrap gap-4 max-tablet:mb-[44px] motion-safe:animate-[fadeUp_.7s_var(--ease-brand)_.4s_both]">
+      <button class="btn btn-primary magnetic max-tablet:flex-[1_1_100%]" type="button" data-sheet="importa">Trova la tua auto</button>
+      <a class="btn btn-ghost magnetic max-tablet:flex-[1_1_100%]" href="/#servizi">Come funziona</a>
+    </div>
+
+    <ul class="flex flex-wrap gap-[22px] text-[.92rem] text-white/[.72] motion-safe:animate-[fadeUp_.7s_var(--ease-brand)_.55s_both]">
+      <li class="flex list-none items-center gap-2"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-light)" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Risposta entro 24h</li>
+      <li class="flex list-none items-center gap-2"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-light)" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Preventivo senza impegno</li>
+      <li class="flex list-none items-center gap-2"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-light)" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Dogana e targa incluse</li>
+    </ul>
+  </div>
+
+  <!-- centred with the `translate` property, never `transform`, so the fadeUp keyframe owns transform -->
+  <div class="absolute bottom-[26px] left-1/2 z-[2] flex flex-col items-center gap-2 text-[.75rem] tracking-[.2em] text-white/60 uppercase [translate:-50%_0] max-tablet:hidden motion-safe:animate-[fadeUp_.7s_var(--ease-brand)_.75s_both]" aria-hidden="true">
+    <span>Scorri</span>
+    <i class="block h-[34px] w-px bg-linear-to-b from-white/70 to-transparent"></i>
+  </div>
+</section>
+
+<script>
+  // The only JS the hero runs. The intro itself stays pure CSS â€” the hero copy is the LCP
+  // element and gating it on a script previously cost 3.0s of render delay.
+  import { initMagnetic } from '../scripts/magnetic';
+  initMagnetic();
+</script>
+
+<style>
+  /* image-set(): LCP background. image-set() lets the browser take AVIF and fall back to
+     WebP, and the media queries stop phones downloading the 1920px frame. Mirrors the
+     <head> preload. Tailwind has no image-set() utility. */
+  .hero-bg {
+    background-image: image-set(url('/images/hero-800.avif') type('image/avif'), url('/images/hero-800.webp') type('image/webp'));
+  }
+  @media (min-width: 761px) {
+    .hero-bg { background-image: image-set(url('/images/hero-1400.avif') type('image/avif'), url('/images/hero-1400.webp') type('image/webp')); }
+  }
+  @media (min-width: 1400px) {
+    .hero-bg { background-image: image-set(url('/images/hero-1920.avif') type('image/avif'), url('/images/hero-1920.webp') type('image/webp')); }
+  }
+
+  /* @keyframes: the intro steps. wordUp and leadUp are transform-only so the browser still
+     paints the text on frame 1 â€” an opacity fade would delay LCP by the whole animation. */
+  @keyframes wordUp { from { transform: translateY(115%) } to { transform: translateY(0) } }
+  @keyframes leadUp { from { transform: translateY(14px) } to { transform: translateY(0) } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: none } }
+</style>

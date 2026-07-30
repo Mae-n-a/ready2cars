@@ -1,0 +1,67 @@
+---
+import { site } from '../data/site';
+
+// one class string for the two store badges — identical treatment, different logo
+const badge = `inline-flex items-center gap-3 min-h-12 px-[22px] py-[11px] rounded-xl
+  bg-black border border-white/28 transition-[transform,border-color,background-color]
+  duration-300 ease-brand
+  hover:border-white hover:bg-[#111] motion-safe:hover:-translate-y-[3px]
+  focus-visible:border-white focus-visible:bg-[#111] motion-safe:focus-visible:-translate-y-[3px]
+  active:border-white active:bg-[#111] motion-safe:active:translate-y-0 motion-safe:active:scale-[.98]`;
+---
+
+<!-- APP CTA -->
+<section id="app" class="relative overflow-hidden text-center text-white py-[clamp(90px,11vw,130px)]">
+  <div id="appBg" class="app-bg absolute left-0 right-0 top-[-12%] bottom-[-12%] bg-center bg-cover bg-no-repeat will-change-transform" aria-hidden="true"></div>
+  <div class="absolute inset-0 bg-linear-to-b from-ink/88 to-ink/92" aria-hidden="true"></div>
+
+  <div class="shell relative z-[2]">
+    <h2 class="gs-up text-section mb-4">Tutto dal tuo smartphone</h2>
+    <p class="gs-up text-white/82 max-w-[52ch] mx-auto mb-[38px]">Con l'app Ready2Cars puoi importare, vendere o commerciare la tua auto dal telefono, senza muoverti da casa.</p>
+
+    <div class="flex flex-wrap justify-center gap-4" data-stagger>
+      <a class={badge} href={site.apps.ios} rel="noopener" aria-label="Scarica su App Store">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.79-.16 2.13-.86 3.44-.73 1.45.13 2.55.7 3.28 1.72-3.28 2.14-2.5 6.32.72 7.64-.63 1.32-1.44 2.63-2.52 3.54ZM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25Z"/></svg>
+        <span><small class="block text-[.68rem] text-left leading-[1.3] text-white/70">Scarica su</small><b class="text-[1.05rem] text-white">App Store</b></span>
+      </a>
+      <a class={badge} href={site.apps.android} rel="noopener" aria-label="Disponibile su Google Play">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.32 13.7 12 3.6 21.68c-.36-.2-.6-.58-.6-1.05V3.37c0-.47.24-.85.6-1.05Zm11.53 8.25L5.98 1.83l10.99 6.3-1.84 2.44Zm2.72-1.56 2.87 1.65c.9.51.9 1.77 0 2.28l-2.87 1.65-2.1-2.79 2.1-2.79ZM5.98 22.17l9.15-8.74 1.84 2.44-10.99 6.3Z"/></svg>
+        <span><small class="block text-[.68rem] text-left leading-[1.3] text-white/70">Disponibile su</small><b class="text-[1.05rem] text-white">Google Play</b></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Parallax on the background layer only, never on the text sitting over it.
+    gsap.to('#appBg', {
+      yPercent: 12,
+      ease: 'none',
+      scrollTrigger: { trigger: '#app', start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+    });
+  }
+</script>
+
+<style>
+  /* image-set() cannot be expressed as a Tailwind utility: the browser picks AVIF or WebP
+     itself, and the 1400px source only downloads above the tablet breakpoint. */
+  .app-bg {
+    background-image: image-set(
+      url('/images/app-cta-800.avif') type('image/avif'),
+      url('/images/app-cta-800.webp') type('image/webp')
+    );
+  }
+  @media (min-width: 761px) {
+    .app-bg {
+      background-image: image-set(
+        url('/images/app-cta-1400.avif') type('image/avif'),
+        url('/images/app-cta-1400.webp') type('image/webp')
+      );
+    }
+  }
+</style>

@@ -1,0 +1,158 @@
+---
+import { site } from '../data/site';
+
+const tel = site.phones.mobile;
+
+// One shared class string: the links are rendered from site.nav, so the styling
+// (including the .is-active pill + underline the scrollspy toggles) lives here once.
+const linkClass = [
+  'relative block px-4 py-[9px] rounded-full text-[.95rem] font-medium',
+  'text-white/76 transition-[color,background] duration-200',
+  'hover:text-white hover:bg-white/9',
+  'focus-visible:text-white focus-visible:bg-white/9 active:bg-white/15',
+  // active section indicator
+  "[&.is-active]:text-white [&.is-active]:bg-accent/20",
+  "[&.is-active]:after:content-[''] [&.is-active]:after:absolute [&.is-active]:after:left-4",
+  '[&.is-active]:after:right-4 [&.is-active]:after:bottom-1 [&.is-active]:after:h-0.5',
+  '[&.is-active]:after:bg-accent [&.is-active]:after:rounded-sm',
+  // inside the mobile panel the links become full-width rows
+  'max-nav:py-[13px] max-nav:text-[1.02rem] max-nav:rounded-xl',
+].join(' ');
+---
+
+{/* Full-width bar: transparent over the hero, glass once scrolled (.scrolled).
+    body.sheet-open pulls it out of the way — the header must never be able to
+    occlude the request sheet's close button. */}
+<header
+  id="nav"
+  class="nav group fixed inset-x-0 top-0 z-50 py-4 bg-transparent
+         transition-[background,box-shadow,padding,transform,opacity] duration-[.35s] ease-brand
+         [&.scrolled]:py-[9px] [&.scrolled]:bg-ink/90
+         [&.scrolled]:backdrop-blur-[16px] [&.scrolled]:backdrop-saturate-150
+         [&.scrolled]:shadow-[0_1px_0_rgba(255,255,255,.08),0_14px_34px_-20px_rgba(0,0,0,.75)]
+         max-nav:[&.open]:bg-ink/97
+         max-nav:[&.open]:backdrop-blur-[16px] max-nav:[&.open]:backdrop-saturate-150
+         max-nav:[&.open]:shadow-lift
+         [body.sheet-open_&]:-translate-y-[140%] [body.sheet-open_&]:opacity-0 [body.sheet-open_&]:pointer-events-none"
+>
+  <div class="relative w-[min(1200px,94%)] mx-auto flex items-center gap-2.5 max-nav:flex-wrap">
+    <a
+      class="block flex-none transition-opacity duration-200 ease-brand
+             hover:opacity-90 focus-visible:opacity-90 active:opacity-75"
+      href="/#top"
+      aria-label="Ready2Cars, torna alla home"
+    >
+      <img
+        src="/images/ready2cars-logo.png"
+        alt="Logo Ready2Cars con la scritta Rent & Import Dreams"
+        width="502"
+        height="127"
+        class="h-[38px] w-auto transition-[height] duration-[.35s] ease-brand
+               group-[.scrolled]:h-8
+               max-tablet:h-[34px] max-tablet:group-[.scrolled]:h-[30px]"
+      />
+    </a>
+
+    {/* below 900px the links collapse into a panel toggled by the hamburger */}
+    <nav
+      id="navPanel"
+      aria-label="Principale"
+      class="max-nav:hidden max-nav:group-[.open]:block
+             max-nav:order-3 max-nav:w-full max-nav:mt-2 max-nav:mb-1
+             max-nav:pt-3 max-nav:border-t max-nav:border-white/12"
+    >
+      <ul class="nav-links flex gap-0.5 list-none ml-3.5 max-nav:flex-col max-nav:ml-0">
+        {site.nav.map((item) => (
+          <li><a href={item.href} class={linkClass}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2">
+      <a
+        class="flex-none w-11 h-11 rounded-full grid place-items-center text-white
+               border border-white/18 transition-[background,border-color,transform] duration-200
+               hover:bg-white/10 hover:border-white/45 hover:-translate-y-px
+               focus-visible:bg-white/10 focus-visible:border-white/45
+               active:scale-95 active:translate-y-0
+               max-phone:hidden"
+        href={tel.href}
+        aria-label={`Chiamaci: ${tel.label}`}
+        title={tel.label}
+      >
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.2a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
+      </a>
+
+      <button
+        class="btn btn-primary px-[22px] py-[11px] min-h-11 text-[.94rem] max-phone:px-[18px] max-phone:text-[.9rem]"
+        type="button"
+        data-sheet="importa"
+      >Richiedi preventivo</button>
+
+      <button
+        id="navToggle"
+        type="button"
+        class="hidden max-nav:block bg-transparent border-0 cursor-pointer p-2.5 min-w-11 min-h-11 rounded-xl
+               transition-[background,transform] duration-200
+               hover:bg-white/9 focus-visible:bg-white/9 active:scale-95
+               [&>span]:block [&>span]:w-[22px] [&>span]:h-0.5 [&>span]:bg-white [&>span]:rounded-sm
+               [&>span]:transition-[transform,opacity] [&>span]:duration-300 [&>span]:ease-brand
+               [&>span+span]:mt-1.5
+               group-[.open]:[&>span:nth-child(1)]:translate-y-2 group-[.open]:[&>span:nth-child(1)]:rotate-45
+               group-[.open]:[&>span:nth-child(2)]:opacity-0
+               group-[.open]:[&>span:nth-child(3)]:-translate-y-2 group-[.open]:[&>span:nth-child(3)]:-rotate-45"
+        aria-label="Apri menu"
+        aria-expanded="false"
+        aria-controls="navPanel"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const nav = document.getElementById('nav')!;
+  const toggle = document.getElementById('navToggle')!;
+
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), { passive: true });
+
+  toggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Chiudi menu' : 'Apri menu');
+  });
+
+  const links = [...nav.querySelectorAll<HTMLAnchorElement>('.nav-links a')];
+
+  links.forEach((a) =>
+    a.addEventListener('click', () => {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Apri menu');
+    })
+  );
+
+  // active-section indicator: last section whose top has passed under the nav wins
+  const spy = links
+    .map((a) => ({ a, sec: a.hash ? document.querySelector<HTMLElement>(a.hash) : null }))
+    .filter((x): x is { a: HTMLAnchorElement; sec: HTMLElement } => !!x.sec);
+
+  let spyQueued = false;
+  function markActive() {
+    spyQueued = false;
+    const line = scrollY + 140;
+    let current = -1;
+    spy.forEach((x, i) => { if (x.sec.offsetTop <= line) current = i; });
+    // near the bottom the last section may never cross the line — treat it as current
+    if (scrollY + innerHeight >= document.body.scrollHeight - 4) current = spy.length - 1;
+    spy.forEach((x, i) => x.a.classList.toggle('is-active', i === current));
+  }
+
+  // rAF-throttled passive listener: one class flip per frame at most
+  addEventListener('scroll', () => {
+    if (!spyQueued) { spyQueued = true; requestAnimationFrame(markActive); }
+  }, { passive: true });
+  addEventListener('load', markActive);
+  markActive();
+</script>

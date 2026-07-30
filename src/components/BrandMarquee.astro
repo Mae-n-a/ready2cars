@@ -1,0 +1,36 @@
+---
+// White band with an infinitely scrolling list of the brands we import.
+const brands = [
+  'Ferrari', 'Porsche', 'Lamborghini', 'Mercedes', 'BMW', 'Audi',
+  'Alfa Romeo', 'Land Rover', 'Tesla', 'Bentley', 'Aston Martin', 'Jaguar',
+];
+---
+
+<section class="bg-white border-y border-hair py-7 overflow-hidden" aria-label="Marchi trattati">
+  <div id="marquee" class="flex w-max gap-9 tablet:gap-14 will-change-transform">
+    {brands.map((b) => (
+      <span
+        class="font-display text-xl tablet:text-2xl font-medium text-[#94A3B8] whitespace-nowrap
+               transition-colors duration-300 ease-brand hover:text-slate-brand"
+      >{b}</span>
+    ))}
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+
+  const mq = document.getElementById('marquee');
+  if (mq && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // duplicate for a seamless wrap, but hide the copy from screen readers so the
+    // brand list isn't announced twice
+    [...mq.children].forEach((node) => {
+      const copy = node.cloneNode(true) as HTMLElement;
+      copy.setAttribute('aria-hidden', 'true');
+      mq.appendChild(copy);
+    });
+    const loop = gsap.to(mq, { xPercent: -50, duration: 34, ease: 'none', repeat: -1 });
+    mq.addEventListener('pointerenter', () => gsap.to(loop, { timeScale: 0, duration: 0.4 }));
+    mq.addEventListener('pointerleave', () => gsap.to(loop, { timeScale: 1, duration: 0.4 }));
+  }
+</script>

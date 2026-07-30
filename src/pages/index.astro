@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import BrandMarquee from '../components/BrandMarquee.astro';
+import Included from '../components/Included.astro';
+import Flow from '../components/Flow.astro';
+import ServiceCards from '../components/ServiceCards.astro';
+import WhySlider from '../components/WhySlider.astro';
+import AppCta from '../components/AppCta.astro';
+import Contact from '../components/Contact.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import RequestSheet from '../components/RequestSheet.astro';
+---
+
+<BaseLayout
+  title="Importa l'auto dei tuoi sogni con Ready2Cars"
+  description="La prima app al mondo per importare un'auto. Importi, vendi o commerci dal telefono: la burocrazia la sbrighiamo noi e l'auto arriva a casa tua."
+  preloadHero
+>
+  <Header />
+
+  <main id="main">
+    <Hero />
+    <BrandMarquee />
+    <Included />
+
+    {/* Flow + service cards are ONE section on purpose: the three services are the entry
+        points into the timeline above, so they share the #servizi anchor and heading.
+        Do not split them back apart. */}
+    <section class="py-[clamp(72px,9vw,120px)]" id="servizi">
+      <div class="shell">
+        <h2 class="section-title gs-up">Come funziona</h2>
+        <Flow />
+        <ServiceCards />
+      </div>
+    </section>
+
+    <WhySlider />
+    <AppCta />
+    <Contact />
+  </main>
+
+  <SiteFooter />
+  <RequestSheet />
+</BaseLayout>

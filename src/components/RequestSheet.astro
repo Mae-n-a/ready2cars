@@ -1,0 +1,331 @@
+---
+/**
+ * RICHIESTA — bottom sheet (mobile) / right drawer (desktop).
+ * Opened from anywhere on the page by a [data-sheet="importa|vendi|commercia"] button.
+ */
+import { site } from '../data/site';
+---
+
+<!-- RICHIESTA — bottom sheet (mobile) / right drawer (desktop) -->
+<!-- z-[100] is a fallback: a modal dialog is in the top layer, but if showModal ever
+     degrades to non-modal the sheet must still sit above the fixed nav (z-index 50) -->
+<dialog
+  class="sheet group fixed inset-0 z-[100] m-0 mt-auto h-auto w-full max-h-[88svh] max-w-none overflow-visible border-0 p-0 bg-white text-ink shadow-deep rounded-t-brand-lg
+         tablet:mt-0 tablet:ml-auto tablet:h-dvh tablet:w-[min(470px,100vw)] tablet:max-h-none tablet:rounded-tr-none tablet:rounded-bl-brand-lg
+         backdrop:bg-ink/65 backdrop:backdrop-blur-[3px]"
+  id="sheet" aria-labelledby="sheetTitle" data-email={site.email}
+>
+ <!-- GSAP animates this wrapper, never the <dialog>: transforming the dialog itself
+      drops it out of the top layer (goes non-modal, backdrop disappears, nav paints over it) -->
+ <div class="sheet-inner flex flex-col h-full min-h-0 rounded-[inherit] overflow-hidden" id="sheetInner">
+  <form class="sheet-form flex flex-col h-full min-h-0 group-[.done]:hidden" id="sheetForm" novalidate>
+    <header
+      class="sheet-head relative flex-none flex items-start gap-4 px-6 pt-[22px] pb-[18px] border-b border-hair max-tablet:pt-[30px] max-tablet:cursor-grab max-tablet:touch-none"
+      id="sheetHead"
+    >
+      <span class="hidden max-tablet:block absolute top-2.5 left-1/2 -translate-x-1/2 w-11 h-[5px] rounded-[3px] bg-hair" aria-hidden="true"></span>
+      <div>
+        <b class="block font-display text-[1.35rem] font-semibold" id="sheetTitle">Raccontaci cosa ti serve</b>
+        <small class="block text-subtle text-[.9rem] mt-[3px]" id="sheetSub">Ti rispondiamo entro 24h con tempi e costi.</small>
+      </div>
+      <button
+        class="flex-none w-11 h-11 -mt-1.5 -mr-1.5 ml-auto border-0 bg-mist rounded-full grid place-items-center cursor-pointer text-ink transition-[background-color,transform] duration-200 hover:bg-[#DCE3EA] focus-visible:bg-[#DCE3EA] motion-safe:active:scale-95"
+        type="button" id="sheetClose" aria-label="Chiudi"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </header>
+
+    <div class="sheet-body flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 pt-[22px] pb-2 grid gap-5">
+      <fieldset class="border-0 p-0 m-0">
+        <legend class="text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2.5 p-0">Cosa vuoi fare</legend>
+        <div class="grid grid-cols-3 gap-2 bg-mist p-[5px] rounded-xl">
+          <label class="relative grid place-items-center px-1.5 py-[11px] min-h-11 rounded-[9px] text-[.9rem] font-semibold text-subtle cursor-pointer text-center transition-[color,background,box-shadow] duration-200 hover:text-ink active:text-ink has-[:checked]:bg-white has-[:checked]:shadow-card has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline has-[:focus-visible]:outline-accent has-[:focus-visible]:outline-offset-2 max-tablet:text-[.84rem] max-tablet:px-0.5">
+            <input class="peer absolute inset-0 opacity-0 m-0 cursor-pointer" type="radio" name="intento" value="Importare un'auto" checked data-intent="importa"><span class="peer-checked:text-ink">Importa</span>
+          </label>
+          <label class="relative grid place-items-center px-1.5 py-[11px] min-h-11 rounded-[9px] text-[.9rem] font-semibold text-subtle cursor-pointer text-center transition-[color,background,box-shadow] duration-200 hover:text-ink active:text-ink has-[:checked]:bg-white has-[:checked]:shadow-card has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline has-[:focus-visible]:outline-accent has-[:focus-visible]:outline-offset-2 max-tablet:text-[.84rem] max-tablet:px-0.5">
+            <input class="peer absolute inset-0 opacity-0 m-0 cursor-pointer" type="radio" name="intento" value="Vendere la mia auto" data-intent="vendi"><span class="peer-checked:text-ink">Vendi</span>
+          </label>
+          <label class="relative grid place-items-center px-1.5 py-[11px] min-h-11 rounded-[9px] text-[.9rem] font-semibold text-subtle cursor-pointer text-center transition-[color,background,box-shadow] duration-200 hover:text-ink active:text-ink has-[:checked]:bg-white has-[:checked]:shadow-card has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline has-[:focus-visible]:outline-accent has-[:focus-visible]:outline-offset-2 max-tablet:text-[.84rem] max-tablet:px-0.5">
+            <input class="peer absolute inset-0 opacity-0 m-0 cursor-pointer" type="radio" name="intento" value="Commerciare (rivenditore)" data-intent="commercia"><span class="peer-checked:text-ink">Commercia</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- IMPORTA -->
+      <fieldset class="fset border-0 p-0 m-0 grid gap-[18px] [&[hidden]]:hidden" data-for="importa">
+        <div class="grid grid-cols-2 gap-3.5 max-tablet:grid-cols-1">
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="i-marca">Marca</label>
+            <select class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="i-marca" name="marca">
+              <option value="">Indifferente</option>
+              <option>Alfa Romeo</option><option>Aston Martin</option><option>Audi</option><option>Bentley</option>
+              <option>BMW</option><option>Ferrari</option><option>Fiat</option><option>Ford</option>
+              <option>Jaguar</option><option>Lamborghini</option><option>Land Rover</option><option>Mercedes</option>
+              <option>Porsche</option><option>Tesla</option><option>Toyota</option><option>Volvo</option><option>Altro</option>
+            </select>
+          </div>
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="i-modello">Modello <span class="normal-case tracking-normal font-normal text-slate-400">(opzionale)</span></label>
+            <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="i-modello" name="modello" type="text" placeholder="Es. 911 Carrera" autocomplete="off">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3.5 max-tablet:grid-cols-1">
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="i-anno">Anno</label>
+            <select class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="i-anno" name="anno">
+              <option value="">Qualsiasi</option>
+              <option>2024 o più recente</option><option>2022-2024</option><option>2019-2022</option><option>2017-2019</option><option>Prima del 2017</option>
+            </select>
+          </div>
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="i-budget">Budget</label>
+            <select class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="i-budget" name="budget">
+              <option value="">Da definire</option>
+              <option>Fino a 20.000 €</option><option>20.000-40.000 €</option><option>40.000-80.000 €</option>
+              <option>80.000-150.000 €</option><option>Oltre 150.000 €</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- VENDI -->
+      <fieldset class="fset border-0 p-0 m-0 grid gap-[18px] [&[hidden]]:hidden" data-for="vendi" hidden disabled>
+        <div class="grid grid-cols-2 gap-3.5 max-tablet:grid-cols-1">
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="v-auto">Auto da vendere</label>
+            <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="v-auto" name="auto" type="text" placeholder="Es. Audi A4 2.0 TDI" data-required>
+            <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Scrivi marca e modello.</span>
+          </div>
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="v-anno">Anno</label>
+            <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="v-anno" name="anno_imm" type="number" min="1950" max="2026" placeholder="Es. 2019" data-required>
+            <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Controlla l'anno.</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3.5 max-tablet:grid-cols-1">
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="v-km">Chilometri</label>
+            <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="v-km" name="km" type="number" min="0" placeholder="Es. 85000" data-required>
+            <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Quanti chilometri ha?</span>
+          </div>
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="v-stato">Condizioni</label>
+            <select class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="v-stato" name="condizioni">
+              <option>Ottime</option><option>Buone</option><option>Da sistemare</option><option>Incidentata</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- COMMERCIA -->
+      <fieldset class="fset border-0 p-0 m-0 grid gap-[18px] [&[hidden]]:hidden" data-for="commercia" hidden disabled>
+        <div class="field group/field">
+          <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="c-azienda">Ragione sociale</label>
+          <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="c-azienda" name="azienda" type="text" placeholder="Es. Rossi Auto S.r.l." autocomplete="organization" data-required>
+          <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Scrivi il nome dell'azienda.</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3.5 max-tablet:grid-cols-1">
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="c-piva">Partita IVA</label>
+            <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="c-piva" name="piva" type="text" inputmode="numeric" placeholder="IT01234567890" data-required>
+            <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Manca la partita IVA.</span>
+          </div>
+          <div class="field group/field">
+            <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="c-volume">Volumi annui</label>
+            <select class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="c-volume" name="volume">
+              <option>Meno di 10 auto</option><option>10-50 auto</option><option>50-200 auto</option><option>Oltre 200 auto</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <span class="flex items-center gap-3 text-subtle text-[.76rem] font-semibold tracking-[.1em] uppercase after:content-[''] after:flex-1 after:h-px after:bg-hair">I tuoi contatti</span>
+
+      <div class="field group/field">
+        <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="s-nome">Nome e cognome</label>
+        <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="s-nome" name="nome" type="text" autocomplete="name" placeholder="Mario Rossi" data-required>
+        <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Come ti chiami?</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3.5 max-tablet:grid-cols-1">
+        <div class="field group/field">
+          <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="s-email">Email</label>
+          <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="s-email" name="email" type="email" autocomplete="email" placeholder="mario@esempio.it" data-required>
+          <span class="hidden group-data-[invalid]/field:block text-accent text-[.84rem] mt-1.5">Serve un'email valida.</span>
+        </div>
+        <div class="field group/field">
+          <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="s-tel">Telefono <span class="normal-case tracking-normal font-normal text-slate-400">(opzionale)</span></label>
+          <input class="w-full p-3.5 min-h-12 border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="s-tel" name="telefono" type="tel" autocomplete="tel" placeholder="+39 …">
+        </div>
+      </div>
+      <div class="field group/field">
+        <label class="block text-[.76rem] font-semibold tracking-[.1em] uppercase text-subtle mb-2" for="s-note">Note <span class="normal-case tracking-normal font-normal text-slate-400">(opzionale)</span></label>
+        <textarea class="w-full p-3.5 min-h-[84px] resize-y border-[1.5px] border-hair rounded-[10px] font-body text-base bg-white text-ink transition-[border-color,box-shadow] duration-200 hover:border-slate-700 focus:border-accent focus:outline-none focus:shadow-[0_0_0_4px_var(--color-accent-soft)] active:border-accent group-data-[invalid]/field:border-accent" id="s-note" name="note" placeholder="Colore, allestimento, tempistiche…"></textarea>
+      </div>
+    </div>
+
+    <footer class="flex-none px-6 py-4 pb-[max(16px,env(safe-area-inset-bottom))] border-t border-hair bg-white grid gap-2.5">
+      <button class="btn btn-primary w-full" type="submit" id="sheetSubmit">Invia richiesta</button>
+      <p class="text-subtle text-[.8rem] text-center m-0">I tuoi dati li usiamo solo per risponderti.</p>
+    </footer>
+  </form>
+
+  <div class="sheet-done hidden group-[.done]:flex flex-col items-center justify-center gap-3.5 h-full px-[30px] py-10 text-center" role="status" aria-live="polite">
+    <span class="w-16 h-16 rounded-full bg-accent-soft grid place-items-center"><svg class="stroke-accent" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+    <h3 class="text-2xl">Richiesta pronta</h3>
+    <p class="text-subtle max-w-[34ch]" id="doneMsg">Ti si apre il programma di posta con l'email già scritta. Devi solo premere invia.</p>
+    <button class="btn btn-primary" type="button" data-sheet-close>Chiudi</button>
+  </div>
+ </div>
+</dialog>
+
+<script>
+  import gsap from 'gsap';
+
+  const sheet = document.getElementById('sheet') as HTMLDialogElement | null;
+  const sheetInner = document.getElementById('sheetInner');
+  const sheetForm = document.getElementById('sheetForm') as HTMLFormElement | null;
+  const head = document.getElementById('sheetHead');
+
+  if (sheet && sheetInner && sheetForm && head) {
+    const fsets = [...sheet.querySelectorAll<HTMLFieldSetElement>('.fset')];
+    const COPY: Record<string, [string, string]> = {
+      importa:   ['Raccontaci cosa ti serve', 'Ti rispondiamo entro 24h con tempi e costi.'],
+      vendi:     ['Vendi la tua auto',        'Ti mandiamo una valutazione gratuita entro 24h.'],
+      commercia: ['Diventa nostro partner',   'Condizioni dedicate ai rivenditori. Ti chiamiamo noi.']
+    };
+
+    // only the visible fieldset participates: disabled fields aren't validated or submitted
+    function setIntent(intent: string) {
+      fsets.forEach(f => {
+        const on = f.dataset.for === intent;
+        f.hidden = !on; f.disabled = !on;
+      });
+      const [title, sub] = COPY[intent];
+      document.getElementById('sheetTitle')!.textContent = title;
+      document.getElementById('sheetSub')!.textContent = sub;
+      const radio = sheet!.querySelector<HTMLInputElement>(`[data-intent="${intent}"]`);
+      if (radio) radio.checked = true;
+    }
+    sheet.querySelectorAll<HTMLInputElement>('[data-intent]').forEach(r =>
+      r.addEventListener('change', () => setIntent(r.dataset.intent!)));
+
+    let lastFocus: HTMLElement | null = null;
+    function openSheet(intent?: string) {
+      setIntent(intent || 'importa');
+      sheet!.classList.remove('done');
+      // showModal() throws InvalidStateError on an already-open dialog, which would leave it
+      // non-modal (no top layer, no backdrop) — so just retarget the open sheet instead
+      if (sheet!.open) { sheet!.querySelector('.sheet-body')!.scrollTop = 0; return; }
+      lastFocus = document.activeElement as HTMLElement | null;
+      try {
+        sheet!.showModal();                         // native: focus trap, Esc, top layer
+      } catch {
+        // dialog stuck open non-modally: reset it rather than leave the user trapped
+        sheet!.close();
+        sheet!.showModal();
+      }
+      // the header hides while the sheet is open so it can never occlude the close button
+      document.body.classList.add('sheet-open');
+      document.body.style.overflow = 'hidden';
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const axis = matchMedia('(max-width: 760px)').matches ? 'yPercent' : 'xPercent';
+        // fromTo, not from: closing mid-tween leaves a partial offset, and `from` would
+        // treat that leftover as the end state on the next open
+        gsap.fromTo(sheetInner, { [axis]: 100 }, { [axis]: 0, xPercent: 0, yPercent: 0, duration: .45, ease: 'power3.out' });
+      }
+    }
+    function closeSheet() {
+      document.body.classList.remove('sheet-open');
+      document.body.style.overflow = '';
+      sheetInner!.style.transform = '';
+      if (sheet!.open) sheet!.close();
+      lastFocus?.focus();
+    }
+    document.querySelectorAll<HTMLElement>('[data-sheet]').forEach(b =>
+      b.addEventListener('click', () => openSheet(b.dataset.sheet)));
+    document.getElementById('sheetClose')!.addEventListener('click', closeSheet);
+    sheet.querySelectorAll('[data-sheet-close]').forEach(b => b.addEventListener('click', closeSheet));
+    sheet.addEventListener('cancel', e => { e.preventDefault(); closeSheet(); });   // Esc
+    sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); }); // backdrop
+
+    // validation: on blur, per field, message next to the field
+    type Input = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    const wrap = (el: Element) => el.closest('.field');
+    function validate(el: Input) {
+      const box = wrap(el); if (!box) return true;
+      const val = el.value.trim();
+      let ok = !!val;
+      if (ok && (el as HTMLInputElement).type === 'email') ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+      if (ok && el.id === 'v-anno') ok = +val >= 1950 && +val <= 2026;
+      box.toggleAttribute('data-invalid', !ok);
+      el.setAttribute('aria-invalid', String(!ok));
+      return ok;
+    }
+    sheetForm.addEventListener('blur', e => {
+      const t = e.target as Input;
+      if (t.hasAttribute?.('data-required')) validate(t);
+    }, true);
+    sheetForm.addEventListener('input', e => {
+      const t = e.target as Input;
+      const box = wrap(t);
+      if (box?.hasAttribute('data-invalid')) validate(t);
+    });
+
+    sheetForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const required = [...sheetForm!.querySelectorAll<Input>('[data-required]')]
+        .filter(el => !el.disabled && !el.closest('[hidden]'));
+      const bad = required.filter(el => !validate(el));
+      if (bad.length) { bad[0].focus(); bad[0].scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+
+      const data = new FormData(sheetForm!);
+      const lines: string[] = [];
+      for (const [k, v] of data.entries()) if (String(v).trim()) lines.push(`${k}: ${v}`);
+      const subject = `Richiesta Ready2Cars: ${data.get('intento')}`;
+
+      // Handing off to the mail client is instant, so without a pending state the sheet
+      // just snaps to "done" and the click feels unacknowledged. A brief busy state gives
+      // the action a beginning and an end.
+      const submitBtn = document.getElementById('sheetSubmit') as HTMLButtonElement | null;
+      const restore = submitBtn?.textContent ?? 'Invia richiesta';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        submitBtn.textContent = 'Apro la mail…';
+      }
+
+      location.href = `mailto:${sheet!.dataset.email}?subject=${encodeURIComponent(subject)}`
+                    + `&body=${encodeURIComponent(lines.join('\n'))}`;
+
+      window.setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
+          submitBtn.textContent = restore;
+        }
+        sheet!.classList.add('done');
+        sheet!.querySelector<HTMLElement>('[data-sheet-close]')!.focus();
+      }, 450);
+    });
+
+    // mobile: drag the header down to dismiss
+    let dragY: number | null = null;
+    head.addEventListener('pointerdown', e => {
+      if (!matchMedia('(max-width: 760px)').matches) return;
+      dragY = e.clientY; head!.setPointerCapture(e.pointerId);
+    });
+    head.addEventListener('pointermove', e => {
+      if (dragY === null) return;
+      const dy = Math.max(0, e.clientY - dragY);
+      sheetInner!.style.transform = `translateY(${dy}px)`;   // inner, not the dialog
+    });
+    head.addEventListener('pointerup', e => {
+      if (dragY === null) return;
+      const dy = Math.max(0, e.clientY - dragY);
+      dragY = null;
+      sheetInner!.style.transform = '';
+      if (dy > 110) closeSheet();
+    });
+  }
+</script>

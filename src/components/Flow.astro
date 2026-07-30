@@ -1,0 +1,79 @@
+---
+// FLOW — "Come funziona" connected timeline, deliberately not another card grid.
+// Copy is verbatim from legacy/index.html; each paragraph is kept at 54-60 characters
+// so all three wrap to exactly two lines at the 34ch cap.
+const steps = [
+  {
+    n: '1',
+    h: 'Dicci cosa cerchi',
+    p: "Marca, modello, budget. Basta anche solo un'idea vaga.",
+  },
+  {
+    n: '2',
+    h: 'Ricevi la proposta',
+    p: "Ti mandiamo foto, storia dell'auto e il prezzo finale.",
+  },
+  {
+    n: '3',
+    h: 'Ritiri le chiavi a casa',
+    p: 'Arriva già targata e pronta. Devi solo firmare e partire.',
+  },
+];
+---
+
+<div class="relative mt-12 [--node:56px] max-tablet:[--node:48px]" data-flow>
+  {/* one rail across the full content width, so it aligns with the heading and the cards
+      below instead of floating inside the column centres */}
+  <span
+    class="absolute left-0 right-0 top-[calc(var(--node)_/_2_-_1px)] h-0.5 overflow-hidden bg-hair max-tablet:hidden"
+    aria-hidden="true"
+    data-flow-rail><i class="block h-full w-full origin-left bg-accent"></i></span>
+
+  <div class="grid grid-cols-3 gap-10 max-tablet:grid-cols-1 max-tablet:gap-0">
+    {steps.map((s) => (
+      <article class="group relative flex flex-col items-center text-center max-tablet:grid max-tablet:grid-cols-[auto_1fr] max-tablet:items-start max-tablet:gap-x-5 max-tablet:pb-[34px] max-tablet:text-left">
+        {/* per-step connectors are the mobile mechanism only; the last one has nothing to connect to */}
+        <span
+          class="hidden max-tablet:absolute max-tablet:bottom-2 max-tablet:left-[calc(var(--node)_/_2_-_1px)] max-tablet:top-[calc(var(--node)_+_10px)] max-tablet:block max-tablet:w-0.5 max-tablet:overflow-hidden max-tablet:bg-hair max-tablet:group-last:hidden"
+          aria-hidden="true"
+          data-flow-seg><i class="block h-full w-full origin-top-left bg-accent"></i></span>
+
+        <span
+          class="relative z-[1] grid h-[var(--node)] w-[var(--node)] flex-none place-items-center rounded-full bg-accent font-display text-[1.3rem] font-bold text-white shadow-node mb-[26px] max-tablet:mb-0 max-tablet:text-[1.15rem]
+           transition duration-300 ease-brand
+           motion-safe:group-hover:scale-[1.08] group-hover:shadow-node-hover"
+          data-flow-num>{s.n}</span>
+
+        <div class="max-w-[34ch] max-tablet:max-w-none" data-flow-txt>
+          <h3 class="mb-2 text-[1.28rem]">{s.h}</h3>
+          <p class="text-subtle">{s.p}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</div>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const flow = document.querySelector('[data-flow]');
+  // gsap.from (never .to on hidden elements) so a deep link that lands past this section
+  // still shows the timeline complete.
+  if (flow && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const q = gsap.utils.selector(flow);
+    const tl = gsap.timeline({ scrollTrigger: { trigger: flow, start: 'top 80%', once: true } });
+    // Two rules learned the hard way here:
+    //  - transform-only, never opacity: a stalled timeline must not leave content invisible.
+    //  - immediateRender:false + clearProps: a `from` tween otherwise writes its start state
+    //    inline straight away (so a stalled timeline froze the numbers at scale .4), and the
+    //    leftover inline transform outranks the CSS hover scale, killing the hover entirely.
+    const fromOpts = { immediateRender: false, clearProps: 'transform' };
+    tl.from(q('[data-flow-rail] i'), { scaleX: 0, duration: 0.9, ease: 'power2.inOut', immediateRender: false })
+      .from(q('[data-flow-num]'), { scale: 0.4, duration: 0.5, stagger: 0.14, ease: 'back.out(2)', ...fromOpts }, '-=.6')
+      .from(q('[data-flow-txt]'), { y: 16, duration: 0.5, stagger: 0.14, ...fromOpts }, '-=.5');
+    // vertical connectors are the mobile mechanism; scale works for either orientation
+    tl.from(q('[data-flow-seg] i'), { scale: 0, duration: 0.5, stagger: 0.14, ease: 'power2.out' }, 0);
+  }
+</script>

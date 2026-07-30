@@ -1,0 +1,144 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { site } from '../data/site';
+---
+
+<LegalLayout
+  title="Cookie Policy — Ready2Cars"
+  description="Quali cookie e servizi esterni usa il sito Ready2Cars, e come gestirli dal tuo browser."
+>
+  <h1>Cookie Policy</h1>
+  <p class="updated">Ultimo aggiornamento: 30 luglio 2026</p>
+
+  <div class="todo">
+    <b>Da verificare prima della pubblicazione</b>
+    <p>
+      Questo documento descrive il sito così com'è oggi: nessun cookie nostro, nessuna statistica,
+      nessun pixel pubblicitario. Se aggiungi Google Analytics, Meta Pixel o simili, questa pagina va
+      aggiornata <em>e</em> serve un banner di consenso che blocchi quegli script fino alla scelta
+      dell'utente. Vedi anche la nota tecnica in fondo.
+    </p>
+  </div>
+
+  <h2>1. In breve</h2>
+  <div class="box">
+    <p>
+      Il sito <strong>non installa cookie propri</strong>, non usa cookie di profilazione e non ti
+      traccia da una visita all'altra. Per questo non vedi un banner di consenso: non c'è nulla da
+      consentire. Carica però tipografia e immagini da server esterni, che ricevono il tuo indirizzo
+      IP. Sotto trovi l'elenco completo.
+    </p>
+  </div>
+
+  <h2>2. Cosa sono i cookie</h2>
+  <p>
+    I cookie sono piccoli file di testo che un sito salva nel tuo browser per ricordare qualcosa tra
+    una pagina e l'altra: la lingua scelta, il fatto che hai già accettato un avviso, oppure il tuo
+    comportamento a fini pubblicitari. Esistono anche altre tecnologie simili (<em>localStorage</em>,
+    pixel, fingerprinting) che raggiungono lo stesso scopo.
+  </p>
+
+  <h2>3. Cookie tecnici nostri</h2>
+  <p>
+    <strong>Nessuno.</strong> Il sito è una pagina statica: non ha login, non ha carrello, non salva
+    preferenze. Le scelte che fai mentre lo usi (ad esempio quale servizio selezioni nel modulo di
+    richiesta) restano nella memoria della pagina e si perdono quando la chiudi.
+  </p>
+
+  <h2>4. Servizi esterni caricati dal sito</h2>
+  <p>
+    <strong>Nessuno.</strong> Caratteri tipografici, fotografie e librerie di animazione sono
+    ospitati sui nostri stessi server: aprendo il sito il tuo browser non contatta nessun fornitore
+    esterno e nessuna azienda terza riceve il tuo indirizzo IP.
+  </p>
+  {/* focusable + named: the table scrolls sideways on narrow screens, so it has to be
+      reachable and announced for keyboard and screen-reader users (axe scrollable-region-focusable) */}
+  <div class="scroller" tabindex="0" role="region" aria-label="Servizi di terze parti e dati che ricevono">
+    <table>
+      <thead>
+        <tr><th>Servizio</th><th>A cosa serve</th><th>Dati</th><th>Informativa</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Caratteri tipografici<br /><small>ospitati da noi</small></td>
+          <td>Mostrano il testo del sito</td>
+          <td>Nessuno: i file arrivano dal nostro server</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Fotografie<br /><small>ospitate da noi</small></td>
+          <td>Le immagini che vedi nelle pagine</td>
+          <td>Nessuno: i file arrivano dal nostro server</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Libreria di animazione<br /><small>ospitata da noi</small></td>
+          <td>Gestisce i movimenti della pagina</td>
+          <td>Nessuno: il file arriva dal nostro server</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>App Store · Google Play · social</td>
+          <td>Solo link in uscita: nulla viene caricato finché non li clicchi</td>
+          <td>Nessun dato prima del clic</td>
+          <td>Informative dei rispettivi gestori</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    I collegamenti a Instagram, Facebook, YouTube, TikTok e WhatsApp nel footer sono normali link:
+    non incorporano widget e non caricano script di quelle piattaforme.
+  </p>
+
+  <h2>5. Come gestire i cookie dal browser</h2>
+  <p>
+    Puoi bloccare o cancellare i cookie di terze parti dalle impostazioni del tuo browser. Tieni
+    presente che bloccare tutto può impedire il corretto caricamento di caratteri e immagini.
+  </p>
+  <ul>
+    <li>
+      <a href="https://support.google.com/chrome/answer/95647" rel="noopener" target="_blank"
+        >Google Chrome</a
+      >
+    </li>
+    <li>
+      <a
+        href="https://support.mozilla.org/it/kb/protezione-antitracciamento-avanzata-firefox-desktop"
+        rel="noopener"
+        target="_blank">Mozilla Firefox</a
+      >
+    </li>
+    <li>
+      <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" rel="noopener" target="_blank"
+        >Safari</a
+      >
+    </li>
+    <li>
+      <a href="https://support.microsoft.com/it-it/microsoft-edge" rel="noopener" target="_blank"
+        >Microsoft Edge</a
+      >
+    </li>
+  </ul>
+
+  <h2>6. Nota tecnica per chi gestisce il sito</h2>
+  <div class="box">
+    <p>
+      Caratteri, fotografie e libreria di animazione sono ospitati sul nostro server, quindi il sito
+      non invia l'indirizzo IP dei visitatori a nessun fornitore esterno. Se in futuro aggiungi
+      statistiche, mappe, video incorporati o un pixel pubblicitario, questa pagina va aggiornata e
+      serve un banner di consenso che blocchi quegli script finché l'utente non sceglie.
+    </p>
+  </div>
+
+  <h2>7. Riferimenti</h2>
+  <p>
+    Per il trattamento dei dati personali in generale — perché li raccogliamo, per quanto li
+    conserviamo e quali diritti hai — leggi la
+    <a href="/privacy-policy">Privacy Policy</a>. Per qualsiasi domanda scrivi a
+    <a href={`mailto:${site.email}`}>{site.email}</a>.
+  </p>
+
+  <span slot="footer-links"><a href="/">Home</a> · <a href="/privacy-policy">Privacy Policy</a></span
+  >
+</LegalLayout>
